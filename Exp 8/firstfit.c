@@ -2,9 +2,9 @@
 
 int main() {
     int m, n;
+
     printf("Enter number of memory blocks:\n");
     scanf("%d", &m);
-
 
     int blockSize[m];
     int originalBlockSize[m];
@@ -14,25 +14,38 @@ int main() {
         scanf("%d", &blockSize[i]);
         originalBlockSize[i] = blockSize[i];
     }
+
     printf("Enter number of processes:\n");
     scanf("%d", &n);
+
     int processSize[n];
+
     printf("Enter size of each process:\n");
     for(int i = 0; i < n; i++) {
         scanf("%d", &processSize[i]);
     }
+
+    // First Fit Allocation
     for(int i = 0; i < n; i++) {
+
         int allocated = 0;
+
         for(int j = 0; j < m; j++) {
-            if(blockSize[j] >= processSize[i]) 
+
+            if(blockSize[j] >= processSize[i]) {
+
                 int fragment = blockSize[j] - processSize[i];
+
                 printf("Process %d of size %d is allocated to Block %d of size %d with Fragment %d\n",
-                       i + 1, processSize[i], j + 1,
-                       originalBlockSize[j], fragment);
+                       i + 1,
+                       processSize[i],
+                       j + 1,
+                       originalBlockSize[j],
+                       fragment);
+
                 blockSize[j] -= processSize[i];
 
                 allocated = 1;
-
 
                 break;
             }
@@ -41,7 +54,8 @@ int main() {
         if(!allocated) {
 
             printf("Process %d of size %d is not allocated\n",
-                   i + 1, processSize[i]);
+                   i + 1,
+                   processSize[i]);
         }
     }
 
