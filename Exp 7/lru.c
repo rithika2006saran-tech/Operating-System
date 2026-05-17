@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 int main() {
-    int n, frames, i, j, pageFaults = 0, pageHits = 0;
-    
+    int n, frames, i, j;
+
     printf("Enter number of pages in reference string: ");
     scanf("%d", &n);
 
@@ -16,16 +16,16 @@ int main() {
     printf("\nEnter number of frames: ");
     scanf("%d", &frames);
 
-    int frame[frames];
+    int frame[frames], recent[frames];
+    int pageFaults = 0, pageHits = 0, time = 0;
 
-    // Initialize frames with -1
+    // Initialize frames
     for(i = 0; i < frames; i++) {
         frame[i] = -1;
+        recent[i] = -1;
     }
 
-    int index = 0;
-
-    // FIFO Page Replacement
+    // LRU Page Replacement
     for(i = 0; i < n; i++) {
         int found = 0;
 
@@ -34,14 +34,31 @@ int main() {
             if(frame[j] == pages[i]) {
                 found = 1;
                 pageHits++;
+                recent[j] = time++;
                 break;
             }
         }
 
         // Page Fault
         if(!found) {
-            frame[index] = pages[i];
-            index = (index + 1) % frames;
+            int lruIndex = 0;
+
+            // Find empty frame first
+            for(j = 0; j < frames; j++) {
+                if(frame[j] == -1) {
+                    lruIndex = j;
+                    break;
+                }
+
+                // Find least recently used page
+                if(recent[j] < recent[lruIndex]) {
+                    lruIndex = j;
+                }
+            }
+
+            frame[lruIndex] = pages[i];
+            recent[lruIndex] = time++;
+
             pageFaults++;
         }
     }
